@@ -19,9 +19,19 @@ public class Runigram {
 		image = flippedHorizontally(tinypic);
 		System.out.println();
 		print(image);
+
+		Color[][]image2;
+		image2=flippedVertically(tinypic);
+		System.out.println();
+		print(image2);
+		
+
 		
 		//// Write here whatever code you need in order to test your work.
 		//// You can continue using the image array.
+		print(scaled(tinypic, 4,6));
+
+		morph(read("cake.ppm"),read("ironman.ppm"),100);
 	}
 
 	/** Returns a 2D array of Color values, representing the image data
@@ -40,7 +50,16 @@ public class Runigram {
 		// creates from the 3 colors a new Color object, and 
 		// makes pixel (i,j) refer to that object.
 		//// Replace the following statement with your code.
-		return null;
+		for (int i=0 ; i<numRows; i++){
+			for (int j=0 ; j<numCols; j++){
+				int r=in.readInt();
+				int g=in.readInt();
+				int b=in.readInt();
+				image[i][j]=new Color(r ,g ,b);
+
+			}
+		}
+		return image;
 	}
 
     // Prints the RGB values of a given color.
@@ -106,7 +125,7 @@ public class Runigram {
 		int b =pixel.getBlue();
 
 		int lum=(int)(0.299 * r + 0.587 * g + 0.112 * b);
-		return new Color (lum , lum , lum);
+		return new Color(lum , lum , lum);
 	}
 	
 	/**
@@ -133,7 +152,7 @@ public class Runigram {
 		Color[][] result= new Color[height][width];
 		for (int i=0; i< height ; i++){
 			for (int j=0; j<width; j++){
-				result[i][j]=image[i*image.length][j*image[0].length];
+				result[i][j]=image[i*image.length/height][j*image[0].length/width];
 			}
 		}
 		return result;
@@ -191,11 +210,13 @@ public class Runigram {
 	 */
 	public static void morph(Color[][] source, Color[][] target, int n) {
 		//// Replace this comment with your code
+		if (target.length != source.length || target[0].length != source[0].length) {
+            target = scaled(target, source[0].length, source.length);
+		}
 		int step =0;
 		for (int i =0 ; i<=n ; i++){
 			double alpha=(double)(n-step)/n;
 			step++;
-
 			Color[][] blended=blend(source, target, alpha);
 			display(blended);
 			StdDraw.pause(100);
